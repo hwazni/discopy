@@ -264,8 +264,6 @@ class Rotation(Parametrized, QuantumGate):
         gradient = complex(gradient) if not gradient.free_symbols else gradient
 
         if params.get('mixed', True):
-            if len(self.dom) != 1:
-                raise NotImplementedError
             s = scalar(np.pi * gradient, is_mixed=True)
             t1 = type(self)(self.phase + .25)
             t2 = type(self)(self.phase - .25)
@@ -336,7 +334,10 @@ class CU1(Rotation):
         _i_2_pi = 1j * 2 * self._pi
 
         if params.get('mixed', True):
-            return super().grad(var, **params)
+            s = scalar((2 ** 0.5) * np.pi * gradient, is_mixed=True)
+            t1 = type(self)(self.phase + .125)
+            t2 = type(self)(self.phase - .125)
+            return s @ (t1 + scalar(-1, is_mixed=True) @ t2)
 
         s = scalar(_i_2_pi * gradient * self._exp(_i_2_pi * self.phase))
         return _outer_prod_diag(1, 1) @ s
@@ -368,7 +369,8 @@ class CRz(Rotation):
         op2 = Id(qubit) @ Z @ scalar(-_i_half_pi * gradient)
 
         if params.get('mixed', True):
-            return super().grad(var, **params)
+            inv_root2 = scalar(2 ** -0.5, is_mixed=True)
+            return inv_root2 @ super().grad(var, **params)
 
         return self >> (op1 + op2)
 
@@ -398,7 +400,8 @@ class CRx(Rotation):
         op2 = Id(qubit) @ X @ scalar(-_i_half_pi * gradient)
 
         if params.get('mixed', True):
-            return super().grad(var, **params)
+            inv_root2 = scalar(2 ** -0.5, is_mixed=True)
+            return inv_root2 @ super().grad(var, **params)
 
         return self >> (op1 + op2)
 

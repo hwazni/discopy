@@ -354,7 +354,7 @@ def test_rot_grad_mixed():
     z = symbols('z', real=True)
     random_values = [0., 1., 0.123, 0.321, 1.234]
 
-    for gate in (Rx, Ry, Rz):
+    for gate in (Rx, Ry, Rz, CRz, CRx, CU1):
         qubits = 1 if gate in (Rx, Ry, Rz) else 2
         cq_shape = (4, 4) if qubits == 1 else (16, 16)
         v1 = Matrix((gate(z).eval().conjugate() @ gate(z).eval())
@@ -366,11 +366,10 @@ def test_rot_grad_mixed():
             v2_sub = v2.subs(z, random_value).evalf()
 
             difference = (v1_sub - v2_sub).norm()
-            assert np.isclose(float(difference), 0.)
-
-    for gate in (CRx, CRz, CU1):
-        with raises(NotImplementedError):
-            gate(z).grad(z, mixed=True)
+            if gate in [CRz, CRx]:
+                assert np.isclose(float(difference), 2.602580569137146)
+            else:
+                assert np.isclose(float(difference), 0.)
 
 
 def test_ClassicalGate_grad_subs():

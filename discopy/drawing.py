@@ -2,6 +2,8 @@
 """ Drawing module. """
 
 import os
+import base64
+from io import BytesIO
 from dataclasses import dataclass
 from abc import ABC, abstractmethod
 from tempfile import NamedTemporaryFile, TemporaryDirectory

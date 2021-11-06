@@ -511,7 +511,10 @@ class MatBackend(Backend):
             plt.savefig(path)
             plt.close()
         if show:
-            plt.show()
+            buf = BytesIO()
+            plt.savefig(buf, format="png")
+            data = base64.b64encode(buf.getbuffer()).decode("ascii")
+            return data
 
 
 def draw(diagram, **params):

@@ -160,4 +160,4 @@ def draw(diagram, **params):
         for s in cups for box in s.boxes)
     if not is_pregroup:
         raise ValueError(messages.expected_pregroup())
-    drawing.pregroup_draw(words, cups, **params)
+    return drawing.pregroup_draw(words, cups, **params)

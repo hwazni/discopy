@@ -851,7 +851,7 @@ def pregroup_draw(words, layers, **params):
     scan = draw_words(words.normal_form())
     draw_grammar(layers, scan)
     edge_padding = 0.01  # to show rightmost edge
-    backend.output(
+    return backend.output(
         params.get('path', None),
         tikz_options=params.get('tikz_options', None),
         xlim=(0, (space + width) * len(words.boxes) - space + edge_padding),
